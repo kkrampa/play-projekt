@@ -1,0 +1,90 @@
+@(form: play.data.Form[Frontend.Login])
+@import helper.twitterBootstrap._
+@import play.api.Play.current
+
+@main("Logowanie") {
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '@current.configuration.getString("facebook.apikey")',
+                cookie     : true,  // enable cookies to allow the server to access
+                // the session
+                xfbml      : true,  // parse social plugins on this page
+                version    : 'v2.0' // use version 2.0
+            });
+
+        };
+        (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.src = "//connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+    </script>
+    @if(form.hasGlobalErrors) {
+        <div class="alert alert-danger">
+            @form.globalError.message
+        </div>
+    }
+	@helper.form(routes.Frontend.auth) {
+
+		@helper.inputText(form("username"), '_label -> "Login")
+		@helper.inputPassword(form("password"), '_label -> "Hasło")
+		
+   		<p>
+       		<button class="btn btn-default" type="submit">Login</button>
+            <button id="fbLogin" class="btn btn-default" type="submit">Login with facebook</button>
+   		</p>
+	}
+
+    <script>
+        $('#fbLogin').click(function(e) {
+            e.preventDefault();
+            FB.login(function(response) {
+            console.log(response);
+            if (response.authResponse) {
+
+                if ( response.status === 'connected' ) {
+                    $.blockUI({
+                    message: "Proszę czekać...",
+                    css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#000',
+                    '-webkit-border-radius': '10px',
+                    '-moz-border-radius': '10px',
+                    opacity: .5,
+                    color: '#fff'
+                    } });
+                    myJsRoutes.controllers.Frontend.registerFbUser (
+                    response.authResponse.userID,
+                    response.authResponse.accessToken
+
+                    ).ajax ( {
+                    success : function ( data ) {
+                    location.href = data ;
+
+                    },
+
+                    error: function(data) {
+                    $('.container' ).prepend('<div class="alert alert-warning">Logowanie nieudane.</div>');
+                    $.unblockUI();
+
+                    }
+                });
+            } else {
+                $('.container' ).prepend('<div class="alert alert-warning">Logowanie nieudane.</div>');
+                }
+        } else {
+            $('.container' ).prepend('<div class="alert alert-warning">Logowanie nieudane. Odmówiono nadania ' +
+            'uprawnień.</div>');
+        }
+        },{scope: 'email'});
+        }
+
+        );
+
+    </script>
+}
+

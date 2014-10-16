@@ -1,0 +1,47 @@
+@(contacts: List[Contact])
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Nazwisko</th>
+            <th>Nazwa firmy</th>
+            <th>Email</th>
+            <th>Telefon</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for(contact <- contacts) {
+            <tr>
+                <td>@contact.getFirstName()</td>
+                <td>@contact.getLastName()</td>
+                <td>@contact.getCompanyName()</td>
+                <td>@contact.getEmail()</td>
+                <td>@contact.getPhoneNumber()</td>
+                <td>
+                    <a href="@routes.Contacts.edit(contact.getId)">Edytuj</a>
+                    <a href="@routes.Contacts.delete(contact.getId)">Usuń</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a class="btn" href="@routes.Contacts.add">Dodaj kontakt</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

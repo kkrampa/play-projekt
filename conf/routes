@@ -1,0 +1,42 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+
+GET         /                        @controllers.Frontend.login()
+
+GET         /logout                  @controllers.Frontend.logout()
+
+GET         /register                @controllers.Frontend.createRegisterForm()
+
+GET         /user/profile            @controllers.Users.index()
+
+GET         /user/image/:id          @controllers.Users.renderImage(id:  Long)
+
+POST        /user/edit               @controllers.Users.editProfile()
+
+POST        /user/role               @controllers.Users.changeRole(userid: Long, role: Long)
+
+POST        /register/save           @controllers.Frontend.registerUser()
+
+POST        /register/fb/            @controllers.Frontend.registerFbUser(userId: String, authToken: String)
+
+POST        /auth                    @controllers.Frontend.auth()
+
+GET         /contacts                @controllers.Contacts.index()
+
+GET         /contacts/add            @controllers.Contacts.add()
+
+GET         /contacts/edit           @controllers.Contacts.edit(id: Long)
+
+GET         /contacts/delete         @controllers.Contacts.delete(id: Long)
+
+POST        /contacts/save           @controllers.Contacts.save()
+
+GET         /admin                   @controllers.Users.listAllUsers()
+
+GET         /javascriptRoutes        controllers.Application.javascriptRoutes
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file            controllers.Assets.at(path="/public", file)

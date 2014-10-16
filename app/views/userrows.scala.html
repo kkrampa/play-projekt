@@ -1,0 +1,74 @@
+@(users: List[User], roles: List[Role])
+<table class="table table-bordered">
+
+    <thead>
+        <tr>
+            <th>Nazwa użytkownika</th>
+            <th>Email</th>
+            <th>Rola</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for(user <- users) {
+            <tr id="@user.getId">
+                <td>@user.getUsername</td>
+                <td>@user.getEmail</td>
+                <td>
+                    @if(user.getId == utils.UserData.current().getId) {
+                        <select class="role" disabled>
+                    } else {
+                        <select class="role">
+
+                    }
+                        @for(role <- roles) {
+                            @if(user.getRole.getId == role.getId) {
+                                <option value="@user.getRole.getId" selected>@role.getName</option>
+                            } else {
+                                <option value="@role.getId">@role.getName</option>
+                            }
+                        }
+
+                    </select>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $('.role' ).change(function() {
+        var id = $(this ).parent( ).parent( ).attr("id");
+        var role = $(this).find("option:selected").attr("value");
+        $.blockUI({
+            message: "Proszę czekać...",
+            css: {
+            border: 'none',
+            padding: '15px',
+            backgroundColor: '#000',
+            '-webkit-border-radius': '10px',
+            '-moz-border-radius': '10px',
+            opacity: .5,
+            color: '#fff'
+        } });
+        myJsRoutes.controllers.Users.changeRole(id, role).ajax({
+           success: function(response) {
+               window.moveTo(100, 100);
+               $('.alert' ).remove();
+               $('.container' ).prepend('<div class="alert alert-success">' + response + '</div>');
+               $.unblockUI();
+           },
+
+           error: function(response) {
+               $('.alert' ).remove();
+               $('.container' ).prepend('<div class="alert alert-danger">' + response.responseText + '</div>');
+               $.unblockUI();
+
+           }
+
+
+       });
+    });
+
+</script>

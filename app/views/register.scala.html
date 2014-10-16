@@ -1,0 +1,51 @@
+@(form: play.data.Form[_], isEdit: Boolean)
+@import helper.twitterBootstrap._
+@import play.api.Play.resource
+@import play.api.Play.current
+
+@main("Rejestracja") {
+
+    @if(form.hasGlobalErrors) {
+        <div class="alert alert-danger">
+            @form.globalError.message
+        </div>
+    }
+
+    @helper.form(if(isEdit) routes.Users.editProfile else routes.Frontend.registerUser, 'enctype -> "multipart/form-data") {
+
+
+        @if(utils.UserData.current() == null || utils.UserData.current().getType != utils.AccountType.valueOf("FACEBOOK")) {
+            @if(isEdit) {
+                @helper.inputText(form("username"), '_label -> "Nazwa użytkownika", 'readOnly -> "readOnly")
+            } else {
+                @helper.inputText(form("username"), '_label -> "Nazwa użytkownika"  )
+            }
+            @helper.inputText(form("email"), '_label -> "Email")
+            @if(isEdit) {
+                @helper.inputPassword(form("password"), '_label -> "Nowe Hasło")
+            } else {
+                @helper.inputPassword(form("password"), '_label -> "Hasło")
+            }
+            @helper.inputPassword(form("repeatPassword"), '_label -> "Powtórz hasło")
+        }
+        @if(isEdit) {
+             <p>
+                 @if(utils.UserData.current().getImage != null) {
+                     <img src="@routes.Users.renderImage(utils.UserData.current().getImage.getId)"/>
+                 }
+            </p>
+            <p>
+                Dodaj zdjęcie(max. 400 x 400):
+                <input type="FILE" name="photo"/>
+            </p>
+        }
+
+        <p>
+            @if(isEdit) {
+                <button class="btn btn-default" type="submit">Aktualizuj profil</button>
+            } else {
+                <button class="btn btn-default" type="submit">Zarejestruj się</button>
+            }
+        </p>
+    }
+}

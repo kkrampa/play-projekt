@@ -1,0 +1,20 @@
+@(form: play.data.Form[Contact], title: String)
+@import helper.twitterBootstrap._
+
+@main(title) {
+	
+	@helper.form(routes.Contacts.save) {
+		@if(form("id").value() != null) {
+			@helper.inputText(form("id"), 'type -> "hidden", 
+				'_label -> "")
+		}
+		@helper.inputText(form("firstName"), '_label -> "Imię")
+		@helper.inputText(form("lastName"), '_label -> "Nazwisko")
+		@helper.inputText(form("companyName"), '_label -> "Nazwa firmy")
+		@helper.inputText(form("phoneNumber"), '_label -> "Numer telefonu", 'type -> "tel")
+		@helper.inputText(form("email"), '_label -> "Email", 'type -> "email")
+   		<p>
+       		<button class="btn btn-default" type="submit">Zapisz</button>
+   		</p>
+	}
+}
